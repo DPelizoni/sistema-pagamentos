@@ -59,7 +59,7 @@ export default function PaymentListPage() {
         <tbody>
           {payments.length === 0 ? (
             <tr>
-              <td colSpan={4} className="text-center">
+              <td colSpan={8} className="text-center">
                 Não há registros
               </td>
             </tr>

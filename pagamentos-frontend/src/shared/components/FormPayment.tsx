@@ -1,7 +1,7 @@
 "use client";
 
-import { useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
 
@@ -27,7 +27,7 @@ export default function FormPayament() {
   const onSubmit: SubmitHandler<FormValues> = (data: Payment) => {
     paymentsApi.create(data);
     alert("Pagamento cadastrado com sucesso!");
-    reset(); // Limpa o formulário após o envio
+    reset(); 
   };
 
   return (

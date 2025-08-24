@@ -3,7 +3,7 @@ import { ptBR } from "date-fns/locale";
 
 export const formatDate = (
   dateString: string | undefined,
-  formatType: "dd/MM/yyyy" | "MM/yyyy" = "dd/MM/yyyy" // formato padrão
+  formatType: "dd/MM/yyyy" | "MM/yyyy" | "dd/MM/yyyy - HH:mm:ss" = "dd/MM/yyyy"
 ): string => {
   if (!dateString) return "";
 
