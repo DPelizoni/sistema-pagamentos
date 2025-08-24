@@ -17,7 +17,7 @@ interface ClientPaymentProps {
 
 export default function ClientDetailPayment({ payment }: ClientPaymentProps) {
   return (
-    <Card className="p-4 shadow-lg col-7 mt-5 mx-auto bg-light">
+    <Card className="p-4 shadow-lg col-4 mt-5 mx-auto bg-light">
       <Card.Body>
         <Card.Title className="text-center mb-4">
           Detalhes do Pagamento

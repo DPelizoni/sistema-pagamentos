@@ -12,10 +12,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import apiPayments from "../services/apiPayments";
 import { FormValues, paymentSchema } from "../schema/paymentSchema";
 import { Payment } from "../types/Payment";
+import { FormProps } from "../types/FormProps";
+import { useEffect } from "react";
 
 const paymentsApi = apiPayments<Payment>();
 
-export default function FormPayament() {
+export default function FormPayament({ initialData }: FormProps) {
   const {
     register,
     handleSubmit,
@@ -27,20 +29,41 @@ export default function FormPayament() {
 
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<FormValues> = (data: Payment) => {
-    paymentsApi.create(data);
-    alert("Pagamento cadastrado com sucesso!");
-    router.push("/payments")
-    reset(); 
+  // 1. Usar useEffect para pré-preencher o formulário
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
+
+  // 2. Lógica de envio que decide entre criar e atualizar
+  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+    try {
+      if (initialData?.id) {
+        // Modo de Edição: Chama a API de atualização (PUT/PATCH)
+        await paymentsApi.update(initialData.id, data);
+        alert("Pagamento atualizado com sucesso!");
+      } else {
+        // Modo de Cadastro: Chama a API de criação (POST)
+        await paymentsApi.create(data);
+        alert("Pagamento cadastrado com sucesso!");
+      }
+      router.push("/payments");
+    } catch (error) {
+      console.error("Erro na operação:", error);
+      alert("Ocorreu um erro. Tente novamente.");
+    }
   };
 
   return (
     <Form
       autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
-      className="p-4 border rounded shadow-sm bg-white"
+      className="p-4 border rounded shadow-sm bg-white col-3"
     >
-      <h2 className="mb-4">Formulário de Pagamento</h2>
+      <h2 className="mb-4">
+        {initialData ? "Editar Pagamento" : "Cadastrar Pagamento"}
+      </h2>
 
       {/* Competência */}
       <Form.Group className="mb-3">
@@ -127,7 +150,7 @@ export default function FormPayament() {
       <ButtonGroup className="d-flex gap-2" size="sm">
         <Button variant="primary" type="submit">
           <CheckIcon />
-          Salvar
+          {initialData ? "Salvar Alterações" : "Cadastrar"}
         </Button>
 
         <Button variant="secondary">
