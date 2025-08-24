@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, ButtonGroup, Form } from "react-bootstrap";
@@ -24,9 +25,12 @@ export default function FormPayament() {
     resolver: yupResolver(paymentSchema),
   });
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<FormValues> = (data: Payment) => {
     paymentsApi.create(data);
     alert("Pagamento cadastrado com sucesso!");
+    router.push("/payments")
     reset(); 
   };
 
