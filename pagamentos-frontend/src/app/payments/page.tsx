@@ -14,11 +14,14 @@ import { apiPayments } from "@/shared/services/apiPayments";
 import { formatDate } from "@/shared/utils/dateFormatter";
 import { formatToReal } from "@/shared/utils/formatToReal";
 import { Payment } from "@/shared/types/Payment";
+import DeleteConfirmationModal from "@/shared/components/DeleteConfirmationModal";
 
 const paymentsApi = apiPayments<Payment>();
 
 export default function PaymentListPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [paymentToDelete, setPaymentToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadPayments() {
@@ -28,6 +31,33 @@ export default function PaymentListPage() {
 
     loadPayments();
   }, []);
+
+  // Lógica para abrir o modal e guardar o ID
+  const handleDeleteClick = (id: string | undefined) => {
+    if (id) {
+      setPaymentToDelete(id);
+      setShowModal(true);
+    }
+  };
+
+  // Lógica de exclusão após a confirmação no modal
+  const handleConfirmDelete = async () => {
+    if (paymentToDelete) {
+      try {
+        await paymentsApi.delete(paymentToDelete);
+        setPayments(
+          payments.filter((payment) => payment.id !== paymentToDelete)
+        );
+        alert("Pagamento excluído com sucesso!");
+      } catch (error) {
+        console.error("Erro ao excluir o pagamento:", error);
+        alert("Ocorreu um erro ao tentar excluir o pagamento.");
+      } finally {
+        setShowModal(false);
+        setPaymentToDelete(null);
+      }
+    }
+  };
 
   return (
     <div className="p-6">
@@ -90,12 +120,12 @@ export default function PaymentListPage() {
                       <EditOutlinedIcon fontSize="small" />
                     </Link>
 
-                    <Link
-                      href={`/payments/${payment.id}/`}
-                      className="btn btn-danger btn-sm"
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDeleteClick(payment.id)}
                     >
                       <DeleteOutlineIcon fontSize="small" />
-                    </Link>
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -103,6 +133,16 @@ export default function PaymentListPage() {
           )}
         </tbody>
       </Table>
+
+      {/* Componente do Modal */}
+      <DeleteConfirmationModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar Exclusão"
+        body={`Você realmente deseja excluir o pagamento de ID: ${paymentToDelete}? 
+        Essa ação não pode ser desfeita.`}
+      />
     </div>
   );
 }
