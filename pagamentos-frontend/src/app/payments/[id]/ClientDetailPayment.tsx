@@ -68,12 +68,6 @@ export default function ClientDetailPayment({ payment }: ClientPaymentProps) {
               <EditOutlinedIcon fontSize="small" /> Editar
             </Link>
 
-            <Link
-              href={`/payments/${payment.id}/`}
-              className="btn btn-danger btn-sm"
-            >
-              <DeleteOutlineIcon fontSize="small" /> Excluir
-            </Link>
           </ButtonGroup>
         </div>
       </Card.Body>
