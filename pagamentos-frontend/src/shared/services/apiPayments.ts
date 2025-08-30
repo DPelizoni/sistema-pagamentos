@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "http://localhost:8000/api/" });
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const api = axios.create({ baseURL: apiUrl });
 const endpoint = "payments";
 
 type ID = string | number;
